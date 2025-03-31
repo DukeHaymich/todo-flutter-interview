@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-class TodoItem extends StatefulWidget {
-  const TodoItem({super.key, required this.name, required this.onDelete});
+class TodoItem extends StatelessWidget {
+  const TodoItem({
+    super.key,
+    required this.name,
+    required this.onDelete,
+    required this.isDone,
+    required this.toggleIsDone,
+  });
 
   final String name;
-  final Function(BuildContext) onDelete;
-
-  @override
-  State<TodoItem> createState() => _TodoItemState();
-}
-
-class _TodoItemState extends State<TodoItem> {
-  bool isDone = false;
+  final Function onDelete;
+  // Move state to parent widget
+  final bool isDone;
+  final Function toggleIsDone;
 
   void toggleItem() {
-    setState(() {
-      isDone = !isDone;
-    });
+    toggleIsDone();
   }
 
   @override
@@ -25,12 +25,14 @@ class _TodoItemState extends State<TodoItem> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Text(widget.name),
-          Checkbox(value: isDone, onChanged: (value) => toggleItem()),
-          TextButton(
-            onPressed: () => widget.onDelete(context),
-            child: Icon(Icons.delete),
+          Text(
+            name,
+            style: TextStyle(
+              decoration: isDone ? TextDecoration.lineThrough : null,
+            ),
           ),
+          Checkbox(value: isDone, onChanged: (value) => toggleItem()),
+          TextButton(onPressed: () => onDelete(), child: Icon(Icons.delete)),
         ],
       ),
     );
